@@ -1,0 +1,121 @@
+import discord
+import requests
+import json
+import random
+from replit import db
+
+from keep_alive import keep_alive
+
+#verbingung zum discord server
+client = discord.Client()
+
+#liste von den wörtergruppen
+Call_Ibel = ["Sentinel?","Ich bin hier bro aber ist senti da?"]
+Gespräch_Sentinel =["Spast"]
+Gespräch_Sentinel2 =["du machst das immer aber was ist unser job?"]
+
+#liste von den wörtergruppen deren antwort
+Call_Ibel_List = ["ey ich bin hier bro ey aber wo ist malada dieser eine schräge"]
+Gespräch_Sentinel_List = ["ja bro chill doch"]
+Gespräch_Sentinel2_List = ["ja aber im ernst was ist unser job?"]
+
+if "responding" not in db.keys():
+  db["responding"] = True
+
+#erstellt eine qoute????
+def get_quote():
+  response = requests.get("https://zenquotes.io/api/random")
+  json_data = json.loads(response.text)
+  quote = json_data[0] ['q'] + " -" + json_data[0] ['a']
+  return(quote)
+
+#?????????????????????????
+def update_encouragements(encouraging_message):
+    if  "encouragements" in db.keys():
+      encouragements = db["encouragements"]
+      encouragements.append(encouraging_message)
+      db["encouragements"] = encouragements 
+    else: 
+      db["encouragements"] = [encouraging_message]
+
+#???????????????
+def delet_encouragement(index):
+  encouragements = db["encouragements"]
+  if len(encouragements) > index:
+    del encouragements[index]
+    db["encouragements"] = encouragements
+
+#gibt eine nachricht wann er fertig mit der anmeldung ist mit dem discord server
+@client.event
+async def on_ready():
+  print('WE have logged in as {0.user}'.format(client))
+
+#auf eine nachricht reagieren das event von discord
+@client.event
+async def on_message(message):
+  if message.author == client.user:
+    return
+
+  #keine ahnung???????????????????????
+  msg = message.content
+
+  #wenn die nachricht dann????????
+  if msg.startswith('$hallo'):
+    quote = get_quote()
+    await message.channel.send(quote)
+  
+  options = Gespräch_Sentinel_List
+  if "encouragements" in db.keys():
+    options = options + db["encouragements"]
+
+  if any(word in msg for word in Gespräch_Sentinel):
+    await message.channel.send(random.choice(Gespräch_Sentinel_List))  
+
+  options = Gespräch_Sentinel2_List 
+  if "encouragements" in db.keys():
+      options = options + db["encouragements"]
+
+  if any(word in msg for word in Gespräch_Sentinel2):
+    await message.channel.send(random.choice(Gespräch_Sentinel2_List))
+    
+  options = Call_Ibel_List
+  if "encouragements" in db.keys():
+      options = options + db["encouragements"]
+
+  if any(word in msg for word in Call_Ibel):
+    await message.channel.send(random.choice(Call_Ibel_List))
+
+#????????????????????????ß
+  if msg.startswith("$new"):
+    encouraging_message = msg.split("$new ",1)[1]
+    update_encouragements(encouraging_message)
+    await message.channel.send("New encouraging message added.")
+
+  #hier mit löscht man hinzugefügte commands vom dc chat die in die datenbank von relipt einfügt wurde
+  if msg.startswith("$del"):
+    encouragements = []
+    if "encouragements" in db.keys():
+      index = int(msg.split("$del",1)[1])
+      delet_encouragement(index)
+      encouragements = db["encouragements"]
+    await message.channel.send(encouragements)
+
+  if msg.startswith("$list"):
+    encouragements = []
+    if "encouragements" in db.keys():
+      encouragements = db["encouragements"]
+    await message.channel.send(encouragements)
+
+  if msg.startswith("$responding"):
+    value = msg.split("$responding ",1)[1]
+
+    if value.lower() == "true":
+      db["responding"] = True
+      await message.channel.send("Responding is on.")
+    else:
+      db["responding"] = False
+    await message.channel.send("Responding is off.")
+
+#der token vom bot agent_boi
+keep_alive()
+client.run('hide')
