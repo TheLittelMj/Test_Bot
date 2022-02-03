@@ -104,4 +104,4 @@ async def on_message(message):
 
 #der token vom bot agent_boi
 keep_alive()
-client.run('OTA4NjY4MTAxOTA4OTEwMTIw.YY5FHQ.A4iniOa69WJ6NYklqbzQPWBe6Ko')
+client.run('Hide')
