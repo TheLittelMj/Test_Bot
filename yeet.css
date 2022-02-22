@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Rowdies:wght@300&display=swap');
+
+body {
+    font: 'Rowdies';
+    color: rgb(255, 255, 255);
+    background: url('fire.gif');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+p {
+    font-family: 'Indie Flower';
+    font-size: 30px;
+}
+
+a {
+    font-size: 20px ;
+}
+
+.Black-box-0{
+    background-color: black;
+    width: 30em;
+    height: 25em;
+}
+
+.image-box-1{
+    width: 100%;
+}
+
+.link {
+    color: red;
+}
+
+button{
+    cursor: url("spitzhacke.png"), url("spitzhacke.png"), default;
+}
+
+
+.link:hover {
+    font-size: 50px;
+    cursor: url("big.jpg"), url("big.jpg"), default;
+}
+
+.oben{
+    color: blue;
+}
